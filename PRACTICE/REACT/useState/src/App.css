@@ -1,0 +1,31 @@
+
+
+.App {
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.Colorizer {
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+
+.Colorizer .Box {
+  width: 13rem;
+  height: 13rem;
+  margin: 1rem;
+  padding: 1rem;
+  border: 1px solid #521d1d;
+  border-radius: 0.5rem;
+}
+
+.Colorizer button {
+  cursor: pointer;
+}
