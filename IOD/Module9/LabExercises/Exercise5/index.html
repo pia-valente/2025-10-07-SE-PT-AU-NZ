@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Chat</title>
+    <style>
+        #chat { border:1px solid #ccc; height:200px; overflow:auto; padding:5px; }
+        #users { border:1px solid #ccc; padding:5px; width:120px; float:right; }
+    </style>
+</head>
+<body>
+    <input id="nick"><br><br>
+
+    <div id="users">
+        <strong>Online:</strong>
+        <ul id="userList"></ul>
+    </div>
+
+    <div id="chat"></div>
+
+    <input id="msg">
+    <button id="send">Send</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const chat = document.getElementById('chat');
+        const msgInput = document.getElementById('msg');
+        const nickInput = document.getElementById('nick');
+        const userList = document.getElementById('userList');
+
+        // Set nickname
+        nickInput.addEventListener('change', () => {
+            socket.emit('set nickname', nickInput.value);
+        });
+
+        // Send message
+        document.getElementById('send').addEventListener('click', sendMsg);
+        msgInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendMsg();
+        });
+
+        function sendMsg() {
+            const msg = msgInput.value.trim();
+            if(!msg) return;
+            append(`You: ${msg}`);
+            socket.emit('chat', msg);
+            msgInput.value = '';
+        }
+
+        // Socket events
+        socket.on('msg', append);
+        socket.on('users', users => {
+            userList.innerHTML = '';
+            users.forEach(u => {
+                const li = document.createElement('li');
+                li.textContent = u;
+                userList.appendChild(li);
+            });
+        });
+
+        function append(txt) {
+            chat.innerHTML += `<div>${txt}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>
